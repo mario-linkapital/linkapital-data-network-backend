@@ -5,15 +5,17 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
-} from '@nestjs/common';
-import { EmpresaService } from './empresa.service';
-import { CreateEmpresaDto } from './dto/create-empresa.dto';
-import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+  Delete
+} from "@nestjs/common";
+import { EmpresaService } from "./empresa.service";
+import { CreateEmpresaDto } from "./dto/create-empresa.dto";
+import { UpdateEmpresaDto } from "./dto/update-empresa.dto";
+import { map } from "rxjs";
 
-@Controller('empresa')
+@Controller("empresa")
 export class EmpresaController {
-  constructor(private readonly empresaService: EmpresaService) {}
+  constructor(private readonly empresaService: EmpresaService) {
+  }
 
   @Post()
   create(@Body() createEmpresaDto: CreateEmpresaDto) {
@@ -25,23 +27,28 @@ export class EmpresaController {
     return this.empresaService.findAll();
   }
 
-  @Get('/group/uf')
+  @Get('/rede/cnpj')
+  getRedeData() {
+    return this.empresaService.findAll();
+  }
+
+  @Get("/group/uf")
   groupByUf() {
     return this.empresaService.groupByUf();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.empresaService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEmpresaDto: UpdateEmpresaDto) {
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateEmpresaDto: UpdateEmpresaDto) {
     return this.empresaService.update(+id, updateEmpresaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.empresaService.remove(+id);
   }
 }
