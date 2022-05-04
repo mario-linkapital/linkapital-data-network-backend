@@ -25,6 +25,11 @@ export class EmpresaController {
     return this.empresaService.findAll();
   }
 
+  @Get('/group/uf')
+  groupByUf() {
+    return this.empresaService.groupByUf();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.empresaService.findOne(+id);

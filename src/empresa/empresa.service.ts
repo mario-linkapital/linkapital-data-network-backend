@@ -19,6 +19,22 @@ export class EmpresaService {
     });
   }
 
+  groupByUf() {
+
+    const a = this.prisma.estabelecimento.groupBy({
+      by: ['uf'],
+      _count: {
+        uf: true,
+      },
+      orderBy: {
+        _count: {
+          uf: 'desc',
+        },
+      },
+    });
+    return
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} empresa`;
   }
