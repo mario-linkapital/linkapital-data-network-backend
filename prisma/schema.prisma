@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model cnae {
+  id      Int    @id @default(autoincrement())
+  codigo    String?
+  descricao String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model empresa {
+  cnpj_basico                 String @id
+  razao_social                String?
+  natureza_juridica           String?
+  qualificacao_responsavel    String?
+  capital_social              Float?
+  porte_empresa               String?
+  ente_federativo_responsavel String?
+
+  @@index([cnpj_basico], map: "empresa_cnpj")
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model estabelecimento {
+  id      Int    @id @default(autoincrement())
+  cnpj_basico                 String?
+  cnpj_ordem                  String?
+  cnpj_dv                     String?
+  identificador_matriz_filial String?
+  nome_fantasia               String?
+  situacao_cadastral          String?
+  data_situacao_cadastral     String?
+  motivo_situacao_cadastral   String?
+  nome_cidade_exterior        String?
+  pais                        String?
+  data_inicio_atividade       String?
+  cnae_fiscal_principal       String?
+  cnae_fiscal_secundaria      String?
+  tipo_logradouro             String?
+  logradouro                  String?
+  numero                      String?
+  complemento                 String?
+  bairro                      String?
+  cep                         String?
+  uf                          String?
+  municipio                   String?
+  ddd_1                       String?
+  telefone_1                  String?
+  ddd_2                       String?
+  telefone_2                  String?
+  ddd_fax                     String?
+  fax                         String?
+  correio_eletronico          String?
+  situacao_especial           String?
+  data_situacao_especial      String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model moti {
+  id      Int    @id @default(autoincrement())
+  codigo    String?
+  descricao String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model munic {
+  id      Int    @id @default(autoincrement())
+  codigo    String?
+  descricao String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model natju {
+  id      Int    @id @default(autoincrement())
+  codigo    String?
+  descricao String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model pais {
+  id      Int    @id @default(autoincrement())
+  codigo    String?
+  descricao String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model quals {
+  id      Int    @id @default(autoincrement())
+  codigo    String?
+  descricao String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model simples {
+  id      Int    @id @default(autoincrement())
+  cnpj_basico           String?
+  opcao_pelo_simples    String?
+  data_opcao_simples    String?
+  data_exclusao_simples String?
+  opcao_mei             String?
+  data_opcao_mei        String?
+  data_exclusao_mei     String?
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model socios {
+  id      Int    @id @default(autoincrement())
+  cnpj_basico                      String?
+  identificador_socio              String?
+  nome_socio_razao_social          String?
+  cpf_cnpj_socio                   String?
+  qualificacao_socio               String?
+  data_entrada_sociedade           String?
+  pais                             String?
+  representante_legal              String?
+  nome_do_representante            String?
+  qualificacao_representante_legal String?
+  faixa_etaria                     String?
+
+}
