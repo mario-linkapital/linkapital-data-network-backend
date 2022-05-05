@@ -11,6 +11,7 @@ import { EmpresaService } from "./empresa.service";
 import { CreateEmpresaDto } from "./dto/create-empresa.dto";
 import { UpdateEmpresaDto } from "./dto/update-empresa.dto";
 import { map } from "rxjs";
+import axios from "axios";
 
 @Controller("empresa")
 export class EmpresaController {
@@ -27,9 +28,30 @@ export class EmpresaController {
     return this.empresaService.findAll();
   }
 
-  @Get('/rede/cnpj')
+  @Get("/rede/cnpj")
   getRedeData() {
-    return this.empresaService.findAll();
+    const axios = require("axios");
+    let response = [];
+    const getData = async () => {
+      try {
+        response = await axios.post("https://www.redecnpj.com.br/rede/grafojson/cnpj/1/07003744000109", []);
+        console.log(response);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getData().then(r => console.log(r));
+    return response;
+  }
+
+  @Get("/uf/:municipio")
+  getMunicipiosByUf(@Param("municipio") municipio: string) {
+    return this.empresaService.municipioByUf(+municipio);
+  }
+
+  @Get("/filter/actividade")
+  getFilterActividade() {
+    return this.empresaService.filterActividade();
   }
 
   @Get("/group/uf")
