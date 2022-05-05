@@ -9,10 +9,8 @@ datasource db {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model cnae {
-  id      Int    @id @default(autoincrement())
-  codigo    String?
+  codigo    String @id
   descricao String?
-
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
