@@ -32,7 +32,7 @@ export class EmpresaService {
         },
       },
     });
-    return
+    return a
   }
 
   findOne(id: number) {
