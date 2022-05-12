@@ -49,6 +49,11 @@ export class EmpresaController {
     return this.empresaService.municipioByUf(+municipio);
   }
 
+  @Get("/empresa/:municipio")
+  getEmpresasByMunicipio(@Param("municipio") municipio: string) {
+    return this.empresaService.empresasBymunicipio(municipio);
+  }
+
   @Get("/filter/actividade")
   getFilterActividade() {
     return this.empresaService.filterActividade();
