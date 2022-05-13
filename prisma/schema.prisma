@@ -23,14 +23,15 @@ model empresa {
   porte_empresa               String?
   ente_federativo_responsavel String?
 
-  @@index([cnpj_basico], map: "empresa_cnpj")
+  /// @@index([cnpj_basico], map: "empresa_cnpj")
+
+  estabels estabelecimento[]
 
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model estabelecimento {
-  id      Int    @id @default(autoincrement())
-  cnpj_basico                 String?
+  cnpj_basico                 String @id
   cnpj_ordem                  String?
   cnpj_dv                     String?
   identificador_matriz_filial String?
@@ -61,7 +62,11 @@ model estabelecimento {
   situacao_especial           String?
   data_situacao_especial      String?
 
+  municipios                  munic? @relation(fields: [municipio], references: [codigo]) /// id del municipio
+  empresas                    empresa? @relation(fields: [cnpj_basico], references: [cnpj_basico]) /// id del municipio
+
 }
+
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model moti {
@@ -73,10 +78,9 @@ model moti {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model munic {
-  id      Int    @id @default(autoincrement())
-  codigo    String?
+  codigo    String @id
   descricao String?
-
+  estabels estabelecimento[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.

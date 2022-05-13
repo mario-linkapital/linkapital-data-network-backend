@@ -49,6 +49,21 @@ export class EmpresaService {
     return a
   }
 
+  async empresasBymunicipio(municipio: string) {
+
+    const results = await this.prisma.empresa.findMany({
+      take: 10,
+      where: {
+        estabels: {
+          some: {
+            municipio: municipio,
+          }
+        }
+      }
+    });
+    return results;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} empresa`;
   }
