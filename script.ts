@@ -42,7 +42,11 @@ async function main() {
 
     const results = await prisma.empresa.findMany({
         take: 1,
+        include: {
+            estabels: true
+        },
         where: {
+
             estabels: {
                 some: {
                     municipio: "0001",

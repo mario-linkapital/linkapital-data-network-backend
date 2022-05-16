@@ -66,6 +66,9 @@ export class EmpresaService {
 
     const results = await this.prisma.empresa.findMany({
       take: 10,
+      include: {
+        estabels: true
+      },
       where: {
         estabels: {
           some: {
