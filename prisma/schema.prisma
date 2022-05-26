@@ -15,7 +15,7 @@ model cnae {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model empresa {
-  cnpj_basico                 String @id
+  cnpj_basico                 String @id @unique
   razao_social                String?
   natureza_juridica           String?
   qualificacao_responsavel    String?
@@ -23,15 +23,13 @@ model empresa {
   porte_empresa               String?
   ente_federativo_responsavel String?
 
-  /// @@index([cnpj_basico], map: "empresa_cnpj")
-
-  estabels estabelecimento[]
+  estabel estabelecimento?
 
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model estabelecimento {
-  cnpj_basico                 String @id
+  cnpj_basico                 String @id @unique
   cnpj_ordem                  String?
   cnpj_dv                     String?
   identificador_matriz_filial String?
@@ -51,7 +49,7 @@ model estabelecimento {
   bairro                      String?
   cep                         String?
   uf                          String?
-  municipio                   String?
+  municipio                   String
   ddd_1                       String?
   telefone_1                  String?
   ddd_2                       String?
@@ -62,55 +60,51 @@ model estabelecimento {
   situacao_especial           String?
   data_situacao_especial      String?
 
-  municipios                  munic? @relation(fields: [municipio], references: [codigo]) /// id del municipio
-  empresas                    empresa? @relation(fields: [cnpj_basico], references: [cnpj_basico]) /// id del municipio
+  municipalitities            munic? @relation(fields: [municipio], references: [codigo]) /// id del municipio
+  company                     empresa? @relation(fields: [cnpj_basico], references: [cnpj_basico]) /// id del municipio
 
 }
 
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model moti {
-  id      Int    @id @default(autoincrement())
-  codigo    String?
+  codigo    String @id @unique
   descricao String?
 
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model munic {
-  codigo    String @id
+  codigo    String @id @unique
   descricao String?
-  estabels estabelecimento[]
+
+  estabel estabelecimento[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model natju {
-  id      Int    @id @default(autoincrement())
-  codigo    String?
+  codigo    String @id @unique
   descricao String?
 
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model pais {
-  id      Int    @id @default(autoincrement())
-  codigo    String?
+  codigo    String @id @unique
   descricao String?
 
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model quals {
-  id      Int    @id @default(autoincrement())
-  codigo    String?
+  codigo    String @id @unique
   descricao String?
 
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model simples {
-  id      Int    @id @default(autoincrement())
-  cnpj_basico           String?
+  cnpj_basico           String @id @unique
   opcao_pelo_simples    String?
   data_opcao_simples    String?
   data_exclusao_simples String?

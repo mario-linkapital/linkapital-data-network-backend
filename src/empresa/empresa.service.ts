@@ -22,15 +22,14 @@ export class EmpresaService {
   }
 
   filterActividade() {
-    const distinctScores = this.prisma.cnae.findMany({
-      distinct: ["codigo", "descricao"],
+    const result = this.prisma.cnae.findMany({
       select: {
         codigo: true,
         descricao: true
       },
     });
 
-    return distinctScores;
+    return result;
   }
 
   groupByUf() {
@@ -49,16 +48,43 @@ export class EmpresaService {
     return a
   }
 
-  async empresasBymunicipio(municipio: string) {
+  async empresasBymunicipio(municipioId: string) {
 
-    const results = await this.prisma.empresa.findMany({
-      take: 10,
+    const results = await this.prisma.estabelecimento.findMany({
+      take: 100,
       where: {
-        estabels: {
-          some: {
-            municipio: municipio,
-          }
+        municipio: {
+          equals: municipioId
         }
+      },
+      include: {
+        municipalitities: true,
+        company: true
+      }
+    });
+    return results;
+  }
+
+  async companiesByFilters(municipioId: string, activity: string, registerCondition: string/*, partnerOption: string, porte: string, identifyOption: string, openDateMin: string, openDateMax: string, socialCapitalMin: string, socialCapitalMax: string*/) {
+
+    const results = await this.prisma.estabelecimento.findMany({
+      take: 100,
+      where: {
+        municipio: {
+          contains: municipioId
+        },
+        AND: {
+          cnae_fiscal_principal: {
+            equals: activity
+          },
+          situacao_cadastral: {
+            equals: registerCondition
+          },
+        },
+      },
+      include: {
+        municipalitities: true,
+        company: true
       }
     });
     return results;

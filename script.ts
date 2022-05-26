@@ -40,15 +40,70 @@ async function main() {
         },
     })*/
 
-    const results = await prisma.empresa.findMany({
+    /*const results = await prisma.empresa.findMany({
         take: 1,
         where: {
-            estabels: {
+            estabelec: {
                 some: {
                     municipio: "0001",
                 }
             }
         }
+    });*/
+    const results = await this.prisma.empresa.findMany({
+        take: 10,
+        where: {
+            capital_social: {
+                not: 0
+            },
+            estabels: {
+                municipio: '8501'
+            }
+        },
+        select: {
+            cnpj_basico: true,
+            capital_social: true,
+            razao_social: true,
+            natureza_juridica: true,
+            ente_federativo_responsavel: true,
+            porte_empresa: true,
+            qualificacao_responsavel: true,
+            estabels: {
+                select: {
+                    cnpj_dv: true,
+                    cnpj_ordem: true,
+                    nome_fantasia: true,
+                    cnae_fiscal_principal: true,
+                    cnae_fiscal_secundaria: true,
+                    data_inicio_atividade: true,
+                    data_situacao_cadastral: true,
+                    data_situacao_especial: true,
+                    situacao_cadastral: true,
+                    situacao_especial: true,
+                    motivo_situacao_cadastral: true,
+                    identificador_matriz_filial: true,
+                    tipo_logradouro: true,
+                    logradouro: true,
+                    bairro: true,
+                    cep: true,
+                    numero: true,
+                    complemento: true,
+                    correio_eletronico: true,
+                    ddd_1: true,
+                    telefone_1: true,
+                    ddd_2: true,
+                    telefone_2: true,
+                    ddd_fax: true,
+                    fax: true,
+                    municipio: true,
+                    municipality: {
+                        select: {
+                            descricao: true
+                        }
+                    }
+                }
+            },
+        },
     });
     // use `console.dir` to print nested objects
     console.dir(results, { depth: null })
