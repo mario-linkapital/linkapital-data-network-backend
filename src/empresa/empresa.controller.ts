@@ -46,7 +46,17 @@ export class EmpresaController {
 
   @Get("/uf/:municipio")
   getMunicipiosByUf(@Param("municipio") municipio: string) {
-    return this.empresaService.municipioByUf(+municipio);
+    //return this.empresaService.municipioByUf(+municipio);
+  }
+
+  @Get("/companies/:municipio")
+  getEmpresasByMunicipio(@Param("municipio") municipio: string) {
+    return this.empresaService.empresasBymunicipio(municipio);
+  }
+
+  @Get("/companiesByFilters/:municipio/:activity/:registerCondition")
+  getCompaniesByFilters(@Param("municipio") municipio: string, @Param("activity") activity: string, @Param("registerCondition") registerCondition: string) {
+    return this.empresaService.companiesByFilters(municipio, activity, registerCondition);
   }
 
   @Get("/filter/actividade")

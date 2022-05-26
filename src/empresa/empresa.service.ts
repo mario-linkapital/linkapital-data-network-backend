@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from "@nestjs/common";
 import { CreateEmpresaDto } from "./dto/create-empresa.dto";
 import { UpdateEmpresaDto } from "./dto/update-empresa.dto";
@@ -21,15 +22,14 @@ export class EmpresaService {
   }
 
   filterActividade() {
-    const distinctScores = this.prisma.cnae.findMany({
-      distinct: ["codigo", "descricao"],
+    const result = this.prisma.cnae.findMany({
       select: {
         codigo: true,
         descricao: true
       },
     });
 
-    return distinctScores;
+    return result;
   }
 
   groupByUf() {
@@ -45,21 +45,49 @@ export class EmpresaService {
         }
       }
     });
-    return a;
+    return a
   }
 
-  municipioByUf(municipio: number) {
-// SELECT municipio, count(cnpj_basico) as total from public.estabelecimento where uf = 'AC' group by municipio
+  async empresasBymunicipio(municipioId: string) {
 
-    const muni = this.prisma.estabelecimento.groupBy({
-      by: ["municipio"],
+    const results = await this.prisma.estabelecimento.findMany({
+      take: 100,
       where: {
-        uf: {
-          equals: `${municipio}`
+        municipio: {
+          equals: municipioId
         }
+      },
+      include: {
+        municipalitities: true,
+        company: true
       }
     });
-    return muni;
+    return results;
+  }
+
+  async companiesByFilters(municipioId: string, activity: string, registerCondition: string/*, partnerOption: string, porte: string, identifyOption: string, openDateMin: string, openDateMax: string, socialCapitalMin: string, socialCapitalMax: string*/) {
+
+    const results = await this.prisma.estabelecimento.findMany({
+      take: 100,
+      where: {
+        municipio: {
+          contains: municipioId
+        },
+        AND: {
+          cnae_fiscal_principal: {
+            equals: activity
+          },
+          situacao_cadastral: {
+            equals: registerCondition
+          },
+        },
+      },
+      include: {
+        municipalitities: true,
+        company: true
+      }
+    });
+    return results;
   }
 
   findOne(id: number) {
