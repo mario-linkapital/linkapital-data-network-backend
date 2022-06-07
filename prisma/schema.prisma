@@ -9,27 +9,59 @@ datasource db {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model cnae {
-  codigo    String @id
+  codigo    String @id @unique
   descricao String?
+
+  estabel_princ estabelecimento[] @relation("CnaePrincEstabel")
+  estabel_sec estabelecimento[] @relation("CnaeSecEstabel")
+
+  ///@@map("cnaes_map")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model socios {
+  cnpj_basico                      String @id @unique
+  identificador_socio              String?
+  nome_socio_razao_social          String?
+  cpf_cnpj_socio                   String?
+  ceaf_socio                       ceaf? @relation(name: "SocioCeaf", fields: [cpf_cnpj_socio, nome_socio_razao_social], references: [cpf, name]) /// qualificacao del socio
+  qualificacao_socio               String?
+  qual_socio                       quals? @relation(name: "SocioQual", fields: [qualificacao_socio], references: [codigo]) /// qualificacao del socio
+  data_entrada_sociedade           String?
+  pais                             String?
+  pais_socio                       pais? @relation(name: "SocioPais", fields: [pais], references: [codigo]) /// pais del socio
+  representante_legal              String?
+  nome_do_representante            String?
+  qualificacao_representante_legal String?
+  //qual_representante_legal         quals[] @relation(name: "RepresentanteLegalQual") /// qualificacao del socio
+  faixa_etaria                     String?
+
+  ///@@map("socios_map")
+
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model empresa {
-  cnpj_basico                 String @id @unique
+  cnpj_basico                 String @id @unique 
+  simple                      simples? @relation(name: "SimplesEmpresa", fields: [cnpj_basico], references: [cnpj_basico]) /// cnpj de la empresa
   razao_social                String?
   natureza_juridica           String?
+  natju                       natju? @relation(name: "NatjuEmpresa", fields: [natureza_juridica], references: [codigo])
   qualificacao_responsavel    String?
   capital_social              Float?
   porte_empresa               String?
   ente_federativo_responsavel String?
 
-  estabel estabelecimento?
+  estabelecimento estabelecimento?    @relation("CompanyEstabel")
 
+  ///@@map("empresa_map")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model estabelecimento {
   cnpj_basico                 String @id @unique
+  company                     empresa? @relation(name: "CompanyEstabel", fields: [cnpj_basico], references: [cnpj_basico]) /// cnpj de la empresa
+  ///socios                      socios? @relation(name: "SocioEstabel", fields: [cnpj_basico], references: [cnpj_basico]) /// cnpj de la empresa
   cnpj_ordem                  String?
   cnpj_dv                     String?
   identificador_matriz_filial String?
@@ -37,10 +69,14 @@ model estabelecimento {
   situacao_cadastral          String?
   data_situacao_cadastral     String?
   motivo_situacao_cadastral   String?
+  motiv_estabel               moti? @relation(name: "MotivEstabel", fields: [motivo_situacao_cadastral], references: [codigo]) /// natju de la empresa
   nome_cidade_exterior        String?
   pais                        String?
+  pais_estabel                pais? @relation(name: "PaisEstabel", fields: [pais], references: [codigo]) /// pais de la empresa
   data_inicio_atividade       String?
+  actividades_princ           cnae? @relation(name: "CnaePrincEstabel", fields: [cnae_fiscal_principal], references: [codigo]) /// id de la actividad
   cnae_fiscal_principal       String?
+  actividades_sec             cnae? @relation(name: "CnaeSecEstabel", fields: [cnae_fiscal_secundaria], references: [codigo]) /// id de la actividad
   cnae_fiscal_secundaria      String?
   tipo_logradouro             String?
   logradouro                  String?
@@ -49,6 +85,7 @@ model estabelecimento {
   bairro                      String?
   cep                         String?
   uf                          String?
+  municipalities              munic? @relation("MunicEstabel", fields: [municipio], references: [codigo]) /// id del municipio
   municipio                   String
   ddd_1                       String?
   telefone_1                  String?
@@ -60,9 +97,7 @@ model estabelecimento {
   situacao_especial           String?
   data_situacao_especial      String?
 
-  municipalitities            munic? @relation(fields: [municipio], references: [codigo]) /// id del municipio
-  company                     empresa? @relation(fields: [cnpj_basico], references: [cnpj_basico]) /// id del municipio
-
+  ///@@map("estabelecimento_map")
 }
 
 
@@ -71,6 +106,8 @@ model moti {
   codigo    String @id @unique
   descricao String?
 
+  estabel estabelecimento? @relation("MotivEstabel")
+
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -78,13 +115,15 @@ model munic {
   codigo    String @id @unique
   descricao String?
 
-  estabel estabelecimento[]
+  estabel estabelecimento[] @relation("MunicEstabel")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model natju {
   codigo    String @id @unique
   descricao String?
+
+  empresa empresa? @relation("NatjuEmpresa")
 
 }
 
@@ -93,6 +132,9 @@ model pais {
   codigo    String @id @unique
   descricao String?
 
+  estabel estabelecimento? @relation("PaisEstabel")
+  socio socios? @relation("SocioPais")
+
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -100,6 +142,8 @@ model quals {
   codigo    String @id @unique
   descricao String?
 
+  socio socios[] @relation("SocioQual")
+  //representante_legal socios[] @relation("RepresentanteLegalQual")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -112,21 +156,87 @@ model simples {
   data_opcao_mei        String?
   data_exclusao_mei     String?
 
+  empresa empresa?     @relation("SimplesEmpresa")
+
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model socios {
-  id      Int    @id @default(autoincrement())
-  cnpj_basico                      String?
-  identificador_socio              String?
-  nome_socio_razao_social          String?
-  cpf_cnpj_socio                   String?
-  qualificacao_socio               String?
-  data_entrada_sociedade           String?
-  pais                             String?
-  representante_legal              String?
-  nome_do_representante            String?
-  qualificacao_representante_legal String?
-  faixa_etaria                     String?
+model cepim {
+  id                    Int @id @unique
+  cnpj                  String?
+  name                  String?
+  motive                String?
+  sanctioning_entity    String?
+  agreement_number      String?
+}
 
+model ceis {
+  id                    Int @id @unique
+  cpf_cnpj              String?
+  name                  String?
+  corporate_name        String?
+  fantasy_name          String?
+  process_name          String?
+  sanction_type         String?
+  sanction_init_date    String?
+  sanction_end_date     String?
+  sanction_agency       String?
+  sanction_agency_state String?
+  source_information    String?
+  source_information_data      String?
+  publication_data      String?
+  publication           String?
+  details               String?
+  scope_court_decision  String?
+  legal_substantiation  String?
+  legal_substantiation_description      String?
+  transit_judment_date  String?
+  organ_supplement      String?
+  observations          String?
+  person_type           String?
+}
+
+model cnep {
+  id                    Int @id @unique
+  cpf_cnpj              String?
+  name                  String?
+  corporate_name        String?
+  fantasy_name          String?
+  process_number        String?
+  sanction_type         String?
+  sanction_init_date    String?
+  sanction_end_date     String?
+  sanction_agency       String?
+  sanction_agency_state String?
+  source_information    String?
+  source_information_data      String?
+  publication_data      String?
+  publication           String?
+  details               String?
+  fine_amount  String?
+  legal_substantiation  String?
+  legal_substantiation_description      String?
+  transit_judment_date  String?
+  organ_supplement      String?
+  person_type           String?
+}
+
+model ceaf {
+  id                    Int @unique
+  cpf                   String
+  socio                 socios[]     @relation("SocioCeaf")
+  name                  String
+  registration          String?
+  organ                 String?
+  organ_state           String?
+  efective_position     String?
+  trust_function                  String?
+  punishment_ordinance_number     String?
+  punishment_ordinance_data       String?
+  page                  String?
+  section               String?
+  punishment_type       String?
+  proccess_number       String?
+  legal_fundament       String?
+
+  @@id([cpf, name])
 }
