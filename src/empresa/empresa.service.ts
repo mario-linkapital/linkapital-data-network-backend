@@ -67,7 +67,6 @@ export class EmpresaService {
     openDateMin: string, openDateMax: string, socialCapitalMin: string, socialCapitalMax: string) {
 
     const results = await this.prisma.estabelecimento.findMany({
-      take: 5,
       where: {
         municipio: {
           contains: municipalityId
@@ -90,6 +89,7 @@ export class EmpresaService {
         company: {
           include: {
             simple: true,
+            natju: true,
           }
         },
       },
@@ -108,8 +108,45 @@ export class EmpresaService {
       include: {
         pais_socio: true,
         qual_socio: true,
-        qual_representante_legal: true,
+        ceaf_socio: true,
+        //qual_representante_legal: true,
       }
+    });
+    return results;
+  }
+
+  async penalitiesCepimByCompany(companyCNPJ: string) {
+
+    const results = await this.prisma.cepim.findMany({
+      where: {
+        cnpj: {
+          equals: companyCNPJ
+        }
+      },
+    });
+    return results;
+  }
+
+  async penalitiesCeisByCompany(cnpj_cpf: string) {
+
+    const results = await this.prisma.ceis.findMany({
+      where: {
+        cpf_cnpj: {
+          equals: cnpj_cpf
+        }
+      },
+    });
+    return results;
+  }
+
+  async penalitiesCnepByCompany(cnpj_cpf: string) {
+
+    const results = await this.prisma.cnep.findMany({
+      where: {
+        cpf_cnpj: {
+          equals: cnpj_cpf
+        }
+      },
     });
     return results;
   }

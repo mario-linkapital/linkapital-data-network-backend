@@ -169,6 +169,21 @@ export class EmpresaController {
     return this.empresaService.partnersByCompany(company);
   }
 
+  @Get('/penalities/cepim/:companyCNPJ')
+  getPenalitiesCepimByCompany(@Param('companyCNPJ') company: string) {
+    return this.empresaService.penalitiesCepimByCompany(company);
+  }
+
+  @Get('/penalities/ceis/:cnpjCPF')
+  getPenalitiesCeisByCompany(@Param('cnpjCPF') cnpjCPF: string) {
+    return this.empresaService.penalitiesCeisByCompany(cnpjCPF);
+  }
+
+  @Get('/penalities/cnep/:cnpjCPF')
+  getPenalitiesCnepByCompany(@Param('cnpjCPF') cnpjCPF: string) {
+    return this.empresaService.penalitiesCnepByCompany(cnpjCPF);
+  }
+
   @Get('/filter/activities')
   getFilterActivities() {
     return this.empresaService.filterActivities();
